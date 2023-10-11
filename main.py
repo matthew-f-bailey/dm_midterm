@@ -1,4 +1,5 @@
 import db
+import argparse
 import logging
 from apriori import Apriori
 from brute import Brute
@@ -9,10 +10,29 @@ logging.basicConfig(level=logging.INFO, format="%(name)s - %(message)s")
 logger = logging.getLogger("main")
 
 # Set low support since only 30 transactions
-SUPPORT = 2
-CONFIDENCE = 0.60
+SUPPORT = None
+CONFIDENCE = None
 
 if __name__=="__main__":
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        'support',
+        type=int,
+        help='The support threshold used by Apriori Algo'
+    )
+    parser.add_argument(
+        'confidence',
+        type=int,
+        help='The confidence threshold used by Apriori Algo'
+    )
+    args = parser.parse_args()
+    if args.confidence:
+        CONFIDENCE = args.confidence
+        logger.info(f"Using user supplied confidence of {CONFIDENCE}")
+    if args.support:
+        SUPPORT = args.support
+        logger.info(f"Using user supplied support of {SUPPORT}")
 
     # Reset the DB
     db.reset_db()
