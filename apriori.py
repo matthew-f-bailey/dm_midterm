@@ -1,6 +1,9 @@
+import logging
 from itertools import combinations
 from typing import Union
 import json
+
+logger = logging.getLogger(__name__)
 
 # Quick and dirty hashing
 SPLIT_CHAR = "|"
@@ -64,7 +67,7 @@ class Apriori:
                 "items": itemset,
             }
 
-        print("\nSubsets of freq itemsets:", all_subsets)
+        logger.debug(f"\nSubsets of freq itemsets: {all_subsets}")
         # Apply rules and use the confidence
         rules = []
         for itemset_string, itemset_vals in all_subsets.items():
@@ -82,8 +85,9 @@ class Apriori:
                         "implies": list(left),
                         "confidence": f"{round(conf*100,2)}%"
                     })
-        print("\nRules Found:\n", json.dumps(rules, indent=4))
-
+        logger.info(f"Rules Found:\n {json.dumps(rules, indent=4)}")
+        return rules
+    
     def get_freq_itemsets(self):
 
         # Prune initial counts
@@ -95,16 +99,18 @@ class Apriori:
         }
 
         # This will hold most recent pruned and only update if more itemsets found
-        last_pruned = pruned
+        all_pruned = {} 
+        all_pruned.update(pruned)
         k = 2
         while True:
             last_pruned = pruned
             pruned = self._step(k=k, pruned=pruned)
+            all_pruned.update(pruned)
             k+=1
             if not pruned:
                 break
-        print("\nFound frequent itemsets:", last_pruned)
-        return last_pruned
+        logger.debug(f"\nFound frequent itemsets: {last_pruned}")
+        return all_pruned
 
     def _step(self, k: int, pruned: dict):
         """The iteritive step of joining and pruning where k is the k-th itemset
@@ -112,7 +118,7 @@ class Apriori:
         Args:
             k (int): Value of k-itemset
         """
-        print("\nPruned", pruned)
+        logger.debug(f"\nPruned: {pruned}")
         # Form new itemset from pruned
         items_left = []
         for items in pruned.keys():

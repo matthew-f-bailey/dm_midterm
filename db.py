@@ -1,8 +1,11 @@
+import logging
 import sqlite3
 import random
 import shutil
 from pathlib import Path
 from sqlite3 import Connection
+
+logger = logging.getLogger(__name__)
 
 DAIRY = 'dairy'
 VEGETABLE = 'vegetable'
@@ -172,9 +175,9 @@ def connect(db: str):
     Path(DB_DIR).mkdir(exist_ok=True)
     fq_path = Path(DB_DIR, f"{db}.sqlite3")
     if fq_path.exists():
-        print("Connecting to DB @", fq_path)
+        logger.debug(f"Connecting to DB @ {fq_path}")
     else:
-        print("Creating DB @", fq_path)
+        logger.debug(f"Creating DB @ {fq_path}")
     conn = sqlite3.connect(fq_path)
     return conn
 
@@ -214,9 +217,9 @@ def reset_db():
         db_name = f"transactions_{i}"
         conn = connect(db_name)
         populate(conn)
-        print("Populated", db_name, "with random transaction data\n")
+        logger.debug(f"Populated {db_name} with random transaction data\n")
 
-    print("Database Reset :)\nReady to being Apriori...")
+    logger.info("Databases Reset :)\nReady to being Apriori...")
 
 if __name__ == "__main__":
     reset_db()
