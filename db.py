@@ -7,6 +7,9 @@ from sqlite3 import Connection
 
 logger = logging.getLogger(__name__)
 
+ITEMS_PER_TRANSACTION_MIN = 10
+ITEMS_PER_TRANSACTION_MAX = 20 # Be careful with this, brute takes forever at high values
+
 DAIRY = 'dairy'
 VEGETABLE = 'vegetable'
 BAKERY = 'bakery'
@@ -197,7 +200,7 @@ def populate(conn: Connection):
     # Generate 20 random samples and save as a transaction
     num_transactions = 20
     for _ in range(num_transactions):
-        sample = random.sample(ITEMS, random.randint(2,6))
+        sample = random.sample(ITEMS, random.randint(ITEMS_PER_TRANSACTION_MIN,ITEMS_PER_TRANSACTION_MAX))
         items = ",".join([x["title"] for x in sample])
         price = sum([x["price"] for x in sample])
         insert = f"""

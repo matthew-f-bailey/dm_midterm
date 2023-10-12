@@ -76,7 +76,7 @@ class Apriori:
             for sub in subs:
                 sub = set(sub)
                 left = ind_items.difference(sub)
-                rule = f"[{'^'.join(sub)}]=>[{'^'.join(left)}]"
+                rule = f"[{'^'.join(sorted(sub))}]=>[{'^'.join(sorted(left))}]"
                 conf = self.calc_support(ind_items)/self.calc_support(sub)
                 if conf>=self.confidence:
                     rules.append({

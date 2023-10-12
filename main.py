@@ -17,14 +17,19 @@ if __name__=="__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        'support',
+        '--support',
         type=int,
         help='The support threshold used by Apriori Algo'
     )
     parser.add_argument(
-        'confidence',
-        type=int,
+        '--confidence',
+        type=float,
         help='The confidence threshold used by Apriori Algo'
+    )
+    parser.add_argument(
+        '--reset_db',
+        type=bool,
+        help='Turn on/off the resetting of the databases with new data.'
     )
     args = parser.parse_args()
     if args.confidence:
@@ -35,10 +40,11 @@ if __name__=="__main__":
         logger.info(f"Using user supplied support of {SUPPORT}")
 
     # Reset the DB
-    db.reset_db()
-    logger.info("--------------------------------------")
-    logger.info("--------- DATABASE RESET -------------")
-    logger.info("--------------------------------------")
+    if args.reset_db:
+        db.reset_db()
+        logger.info("--------------------------------------")
+        logger.info("--------- DATABASE RESET -------------")
+        logger.info("--------------------------------------")
 
     # Fetch all the data before timer
     db_data = [
@@ -109,10 +115,15 @@ if __name__=="__main__":
 
     # Sort rules to make sure they are the same
     for i in range(1, 6):
-        db_ap_rules = all_ap_rules[f"database_{i}"]
-        db_brute_rules = all_brute_rules[f"database_{i}"]
-        if len(db_ap_rules)==len(db_brute_rules):
-            logger.info(f"Rules for Apriori and Brute in DB {i} matched and found {len(db_brute_rules)} rules")
+        db_ap_rules = {x["rule"] for x in all_ap_rules[f"database_{i}"]}
+        db_brute_rules = {x["rule"] for x in all_brute_rules[f"database_{i}"]}
 
-    logger.info(f"Over entire execution Apriori was {round((-100)*(apriori_time-brute_time),5)} milliseconds faster")
+        # Quick check to bail out if not same
+        if db_brute_rules!=db_ap_rules:
+            raise AssertionError("Rules not of same length...")
+        else:
+            logger.info(f"Rules exactly Matched for DB {i}")
+
+        
+    logger.info(f"Over entire execution Apriori was {round((-1)*(apriori_time-brute_time),5)} seconds faster")
 
