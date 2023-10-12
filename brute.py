@@ -63,11 +63,9 @@ class Brute:
         # Caclulate confidence of each potential rule
         all_subsets = {}
         for itemset in all_frequent:
-            print(itemset)
             subsets = []
             for i in range(len(itemset)-1, 0, -1):
                 subsets.extend(list(combinations(itemset, i)))
-            print(subsets)
             all_subsets["|".join(itemset)] = {
                 "subsets": subsets,
                 "items": itemset,
@@ -90,7 +88,7 @@ class Brute:
                         "implies": list(left),
                         "confidence": f"{round(conf*100,2)}%"
                     })
-        logger.info(f"Rules Found:\n {json.dumps(rules, indent=4)}")
+        logger.info(f"Number of Rules Found: {len(rules)}")
         
         return rules
 

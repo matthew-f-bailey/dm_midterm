@@ -85,7 +85,7 @@ class Apriori:
                         "implies": list(left),
                         "confidence": f"{round(conf*100,2)}%"
                     })
-        logger.info(f"Rules Found:\n {json.dumps(rules, indent=4)}")
+        logger.info(f"Number of Rules Found: {len(rules)}")
         return rules
     
     def get_freq_itemsets(self):

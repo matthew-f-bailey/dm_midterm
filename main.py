@@ -74,7 +74,7 @@ if __name__=="__main__":
         logger.info("--------------------------------------")
         logger.info(f"--------- APRIORI FOR DB {i+1}------------")
         logger.info("--------------------------------------")
-        logger.info(f"Transactions: {json.dumps(transactions, indent=4)}")
+        logger.info(f"Printing only first transcation for brevity: {json.dumps(transactions[0], indent=4)}")
 
         ap = Apriori(
             transactions=transactions,
@@ -97,7 +97,7 @@ if __name__=="__main__":
         logger.info("--------------------------------------")
         logger.info(f"--------- BRUTE FOR DB {i+1}------------")
         logger.info("--------------------------------------")
-        logger.info(f"Transactions: {json.dumps(transactions, indent=4)}")
+        logger.info(f"Printing only first transcation for brevity: {json.dumps(transactions[0], indent=4)}")
 
         brute = Brute(
             transactions=transactions,
